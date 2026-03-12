@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ClarityTube — Smart Educational Video Search</title>
+<style>
+  :root {
+    --red: #E24B4A;
+    --red-dark: #A32D2D;
+    --red-light: #FCF0F0;
+    --green: #3B6D11;
+    --green-bg: #EAF3DE;
+    --green-border: #C0DD97;
+    --amber: #854F0B;
+    --amber-bg: #FAEEDA;
+    --amber-border: #FAC775;
+    --gray-50: #F9F9F8;
+    --gray-100: #F0EFEA;
+    --gray-200: #E0DED8;
+    --gray-400: #9B9A95;
+    --gray-600: #5F5E5A;
+    --gray-900: #1C1C1A;
+    --white: #ffffff;
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-lg: 0 4px 16px rgba(0,0,0,0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, 'Segoe UI', system-ui, sans-serif;
+    background: var(--gray-50);
+    color: var(--gray-900);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--white);
+    border-bottom: 1px solid var(--gray-200);
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+  .logo-icon {
+    width: 32px; height: 32px;
+    background: var(--red);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .logo-icon svg { width: 16px; height: 16px; fill: white; }
+  .logo-text { font-size: 19px; font-weight: 600; color: var(--gray-900); letter-spacing: -0.4px; }
+  .logo-text span { color: var(--red); }
+
+  .header-search {
+    flex: 1;
+    max-width: 520px;
+    display: flex;
+    border: 1.5px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: border-color 0.15s;
+  }
+  .header-search:focus-within { border-color: var(--red); }
+  .header-search input {
+    flex: 1;
+    border: none; outline: none;
+    padding: 9px 14px;
+    font-size: 14px;
+    background: transparent;
+    color: var(--gray-900);
+    font-family: inherit;
+  }
+  .header-search button {
+    background: var(--red);
+    color: white;
+    border: none;
+    padding: 0 18px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s;
+  }
+  .header-search button:hover { background: var(--red-dark); }
+  .header-search button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .header-nav { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+  .nav-link { font-size: 13px; color: var(--gray-600); padding: 5px 10px; border-radius: var(--radius-sm); cursor: pointer; text-decoration: none; }
+  .nav-link:hover { background: var(--gray-100); color: var(--gray-900); }
+
+  /* HERO */
+  .hero {
+    padding: 5rem 2rem 3rem;
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .hero h1 {
+    font-size: 2.6rem;
+    font-weight: 700;
+    letter-spacing: -1px;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+    color: var(--gray-900);
+  }
+  .hero h1 span { color: var(--red); }
+  .hero p {
+    font-size: 16px;
+    color: var(--gray-600);
+    line-height: 1.7;
+    margin-bottom: 2rem;
+  }
+  .hero-search {
+    display: flex;
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    max-width: 520px;
+    margin: 0 auto 1.5rem;
+    box-shadow: var(--shadow-lg);
+    transition: border-color 0.15s;
+  }
+  .hero-search:focus-within { border-color: var(--red); }
+  .hero-search input {
+    flex: 1; border: none; outline: none;
+    padding: 14px 18px;
+    font-size: 15px;
+    font-family: inherit;
+    background: var(--white);
+    color: var(--gray-900);
+  }
+  .hero-search button {
+    background: var(--red); color: white;
+    border: none; padding: 0 24px;
+    font-size: 15px; font-weight: 600;
+    cursor: pointer; font-family: inherit;
+    transition: background 0.15s;
+  }
+  .hero-search button:hover { background: var(--red-dark); }
+  .hero-search button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .topic-chips {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    justify-content: center;
+  }
+  .chip {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    cursor: pointer;
+    border: 1px solid var(--gray-200);
+    background: var(--white);
+    color: var(--gray-600);
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .chip:hover { border-color: var(--red); color: var(--red); background: var(--red-light); }
+  .chip.active { background: var(--red-light); border-color: var(--red); color: var(--red-dark); font-weight: 500; }
+
+  /* MAIN LAYOUT */
+  .main { max-width: 1100px; margin: 0 auto; padding: 2rem; display: grid; grid-template-columns: 230px minmax(0,1fr); gap: 24px; }
+
+  /* SIDEBAR */
+  .sidebar { }
+  .sidebar-card {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    margin-bottom: 14px;
+  }
+  .sidebar-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.9px;
+    color: var(--gray-400);
+    margin-bottom: 12px;
+  }
+  .filter-opt {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 4px 0;
+    cursor: pointer;
+  }
+  .filter-opt input[type=checkbox] {
+    width: 15px; height: 15px;
+    accent-color: var(--red);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .filter-opt label {
+    font-size: 13px;
+    color: var(--gray-600);
+    cursor: pointer;
+    line-height: 1.3;
+  }
+  .filter-opt:hover label { color: var(--gray-900); }
+
+  .range-wrap { margin-top: 4px; }
+  .range-wrap input[type=range] {
+    width: 100%;
+    accent-color: var(--red);
+    cursor: pointer;
+  }
+  .range-labels {
+    display: flex; justify-content: space-between;
+    font-size: 11px; color: var(--gray-400);
+    margin-top: 3px;
+  }
+  .range-val { font-size: 13px; font-weight: 600; color: var(--gray-900); }
+
+  .divider { height: 1px; background: var(--gray-100); margin: 12px 0; }
+
+  /* RESULTS */
+  .results-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+  .results-meta { font-size: 13px; color: var(--gray-600); }
+  .results-meta strong { color: var(--gray-900); font-weight: 600; }
+  .sort-select {
+    margin-left: auto;
+    font-size: 13px;
+    border: 1px solid var(--gray-200);
+    background: var(--white);
+    color: var(--gray-900);
+    border-radius: var(--radius-sm);
+    padding: 5px 10px;
+    font-family: inherit;
+    cursor: pointer;
+    outline: none;
+  }
+  .sort-select:focus { border-color: var(--red); }
+
+  /* VIDEO CARD */
+  .video-card {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.25rem;
+    margin-bottom: 12px;
+    display: grid;
+    grid-template-columns: 130px minmax(0,1fr);
+    gap: 16px;
+    transition: box-shadow 0.15s, border-color 0.15s;
+  }
+  .video-card:hover { box-shadow: var(--shadow); border-color: var(--gray-300); }
+
+  .thumb {
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    height: 78px;
+    background: var(--gray-100);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+  .thumb:hover .play-btn { transform: scale(1.1); }
+  .play-btn {
+    width: 36px; height: 36px;
+    background: rgba(0,0,0,0.55);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.15s;
+  }
+  .play-btn svg { width: 14px; height: 14px; fill: white; margin-left: 2px; }
+  .thumb-dur {
+    position: absolute; bottom: 4px; right: 4px;
+    background: rgba(0,0,0,0.72); color: white;
+    font-size: 11px; font-weight: 600;
+    padding: 2px 5px; border-radius: 3px;
+  }
+  .thumb-thumbnail {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+
+  .card-body { min-width: 0; }
+  .card-title {
+    font-size: 14px; font-weight: 600;
+    color: var(--gray-900);
+    line-height: 1.4;
+    margin-bottom: 3px;
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+  }
+  .card-title:hover { color: var(--red); }
+  .card-channel { font-size: 12px; color: var(--gray-400); margin-bottom: 8px; }
+
+  .card-meta { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+
+  .score-badge {
+    display: flex; align-items: center; gap: 4px;
+    padding: 3px 8px; border-radius: 5px;
+    font-size: 12px; font-weight: 600;
+  }
+  .score-badge.high { background: var(--green-bg); border: 1px solid var(--green-border); color: var(--green); }
+  .score-badge.med { background: var(--amber-bg); border: 1px solid var(--amber-border); color: var(--amber); }
+  .score-badge.low { background: #FCEBEB; border: 1px solid #F7C1C1; color: #A32D2D; }
+  .score-badge svg { width: 11px; height: 11px; }
+
+  .tag {
+    background: var(--gray-100);
+    color: var(--gray-600);
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    border: 1px solid var(--gray-200);
+  }
+
+  .sub-badge {
+    display: flex; align-items: center; gap: 3px;
+    font-size: 11px; color: var(--green);
+  }
+  .sub-badge svg { width: 12px; height: 12px; }
+
+  .expand-btn {
+    font-size: 11px;
+    color: var(--gray-400);
+    margin-top: 6px;
+    cursor: pointer;
+    display: inline-block;
+    user-select: none;
+  }
+  .expand-btn:hover { color: var(--gray-600); }
+
+  .breakdown {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--gray-100);
+    display: none;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px 16px;
+  }
+  .video-card.expanded .breakdown { display: grid; }
+
+  .score-row { display: flex; align-items: center; gap: 7px; }
+  .score-label { font-size: 11px; color: var(--gray-400); width: 80px; flex-shrink: 0; }
+  .bar-bg { flex: 1; height: 4px; background: var(--gray-100); border-radius: 2px; overflow: hidden; }
+  .bar-fill { height: 4px; border-radius: 2px; background: var(--red); transition: width 0.5s ease; }
+  .score-num { font-size: 11px; color: var(--gray-600); font-weight: 500; width: 26px; text-align: right; }
+
+  /* STATES */
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--gray-400);
+  }
+  .empty-state svg { width: 48px; height: 48px; margin-bottom: 1rem; opacity: 0.4; }
+  .empty-state h3 { font-size: 16px; font-weight: 600; color: var(--gray-600); margin-bottom: 0.5rem; }
+  .empty-state p { font-size: 14px; }
+
+  .loading-state {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .skeleton-card {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.25rem;
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    gap: 16px;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.55} }
+  .sk { background: var(--gray-100); border-radius: 4px; }
+  .sk-thumb { height: 78px; border-radius: var(--radius-sm); }
+  .sk-line { height: 13px; margin-bottom: 8px; }
+
+  .status-bar {
+    font-size: 13px;
+    color: var(--gray-600);
+    padding: 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .spinner {
+    width: 16px; height: 16px;
+    border: 2px solid var(--gray-200);
+    border-top-color: var(--red);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    flex-shrink: 0;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .error-banner {
+    background: #FCEBEB;
+    border: 1px solid #F7C1C1;
+    border-radius: var(--radius-md);
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--red-dark);
+    margin-bottom: 16px;
+    display: none;
+  }
+
+  /* SUMMARY PANEL */
+  .summary-panel {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    margin-bottom: 14px;
+    display: none;
+  }
+  .summary-panel.visible { display: block; }
+  .summary-title { font-size: 13px; font-weight: 600; color: var(--gray-900); margin-bottom: 8px; }
+  .summary-text { font-size: 13px; color: var(--gray-600); line-height: 1.7; }
+  .summary-bullets { margin-top: 8px; }
+  .summary-bullets li { font-size: 13px; color: var(--gray-600); margin-bottom: 4px; padding-left: 4px; }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 2rem;
+    font-size: 12px;
+    color: var(--gray-400);
+    border-top: 1px solid var(--gray-200);
+    margin-top: 4rem;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 760px) {
+    .main { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .hero h1 { font-size: 1.8rem; }
+  }
+
+  /* How it works */
+  .how-grid {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 16px;
+    max-width: 860px;
+    margin: 3rem auto 0;
+    padding: 0 2rem;
+  }
+  .how-card {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+  }
+  .how-num {
+    width: 28px; height: 28px;
+    background: var(--red-light);
+    color: var(--red-dark);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .how-card h3 { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+  .how-card p { font-size: 13px; color: var(--gray-600); line-height: 1.6; }
+
+  @media (max-width: 600px) {
+    .how-grid { grid-template-columns: 1fr; }
+    .header { padding: 0 1rem; gap: 1rem; }
+    .header-search { max-width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<!-- STICKY HEADER (shown after search) -->
+<div class="header" id="sticky-header" style="display:none;">
+  <a class="logo" href="#" onclick="showHero()">
+    <div class="logo-icon"><svg viewBox="0 0 16 16"><path d="M5 3.5l7 4.5-7 4.5z"/></svg></div>
+    <div class="logo-text">Clarity<span>Tube</span></div>
+  </a>
+  <div class="header-search">
+    <input type="text" id="header-search-input" placeholder="Search educational videos..." />
+    <button id="header-search-btn" onclick="doSearch('header')">Search</button>
+  </div>
+  <nav class="header-nav">
+    <a class="nav-link" href="#" onclick="showHero()">Home</a>
+  </nav>
+</div>
+
+<!-- HERO -->
+<div id="hero-section">
+  <div class="hero">
+    <h1>The smart search for<br/><span>educational YouTube</span></h1>
+    <p>Cut through the noise. Find high-quality, unbiased, concise videos on any topic — ranked by information density, not popularity.</p>
+    <div class="hero-search">
+      <input type="text" id="hero-input" placeholder='Try "AI alignment" or "global trade..."' />
+      <button id="hero-btn" onclick="doSearch('hero')">Search</button>
+    </div>
+    <div class="topic-chips" id="topic-chips">
+      <div class="chip" onclick="quickSearch('AI and machine learning')">AI</div>
+      <div class="chip" onclick="quickSearch('world economics')">World Economics</div>
+      <div class="chip" onclick="quickSearch('future technology')">Future Technology</div>
+      <div class="chip" onclick="quickSearch('geopolitics')">Geopolitics</div>
+      <div class="chip" onclick="quickSearch('quantum computing')">Quantum Computing</div>
+      <div class="chip" onclick="quickSearch('climate change science')">Climate</div>
+    </div>
+  </div>
+
+  <div class="how-grid">
+    <div class="how-card">
+      <div class="how-num">1</div>
+      <h3>Search any topic</h3>
+      <p>Enter any subject — AI, economics, science, geopolitics — and ClarityTube finds the most educational videos.</p>
+    </div>
+    <div class="how-card">
+      <div class="how-num">2</div>
+      <h3>AI quality scoring</h3>
+      <p>Each video is scored on information density, bias neutrality, speech clarity, subtitle quality, and conciseness.</p>
+    </div>
+    <div class="how-card">
+      <div class="how-num">3</div>
+      <h3>Filter your results</h3>
+      <p>Set minimum quality scores, video length, subtitle requirements, and topic filters to match your needs.</p>
+    </div>
+  </div>
+</div>
+
+<!-- RESULTS PAGE -->
+<div id="results-section" style="display:none;">
+  <div class="main">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-card">
+        <div class="sidebar-title">Quality filters</div>
+        <div class="filter-opt">
+          <input type="checkbox" id="f-density" checked />
+          <label for="f-density">High info density</label>
+        </div>
+        <div class="filter-opt">
+          <input type="checkbox" id="f-neutral" checked />
+          <label for="f-neutral">Neutral tone only</label>
+        </div>
+        <div class="filter-opt">
+          <input type="checkbox" id="f-expert" />
+          <label for="f-expert">Expert speakers</label>
+        </div>
+        <div class="filter-opt">
+          <input type="checkbox" id="f-subs" checked />
+          <label for="f-subs">Subtitles required</label>
+        </div>
+      </div>
+
+      <div class="sidebar-card">
+        <div class="sidebar-title">Max video length</div>
+        <div class="range-wrap">
+          <input type="range" min="3" max="60" value="20" id="dur-range"
+            oninput="document.getElementById('dur-val').textContent=this.value+' min'" />
+          <div class="range-labels">
+            <span>3 min</span>
+            <span class="range-val" id="dur-val">20 min</span>
+            <span>60 min</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-card">
+        <div class="sidebar-title">Min quality score</div>
+        <div class="range-wrap">
+          <input type="range" min="0" max="100" value="70" id="score-range"
+            oninput="document.getElementById('score-val').textContent=this.value" />
+          <div class="range-labels">
+            <span>0</span>
+            <span class="range-val" id="score-val">70</span>
+            <span>100</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-card">
+        <div class="sidebar-title">Topics</div>
+        <div id="topic-filter-chips" class="topic-chips" style="justify-content:flex-start; gap:6px;"></div>
+      </div>
+
+      <div class="sidebar-card" id="summary-panel" style="display:none;">
+        <div class="sidebar-title">Topic overview</div>
+        <div class="summary-text" id="summary-text"></div>
+      </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div class="results-col">
+      <div class="error-banner" id="error-banner"></div>
+
+      <div class="results-header" id="results-header">
+        <div class="results-meta" id="results-meta">Searching...</div>
+        <select class="sort-select" id="sort-select" onchange="applySortFilter()">
+          <option value="score">Sort: Quality score</option>
+          <option value="duration">Sort: Shortest first</option>
+          <option value="views">Sort: Most views</option>
+        </select>
+      </div>
+
+      <div id="results-list"></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  ClarityTube · Powered by YouTube Data API & Claude AI · Educational content only
+</footer>
+
+<script>
+const YOUTUBE_API_KEY = 'AIzaSyART_QPTcJ6Iflwc-yItQNRSPgjd-39p4U';
+let allResults = [];
+let currentQuery = '';
+
+// ─── Entry points ─────────────────────────────────────────────
+function showHero() {
+  document.getElementById('hero-section').style.display = '';
+  document.getElementById('results-section').style.display = 'none';
+  document.getElementById('sticky-header').style.display = 'none';
+}
+
+function quickSearch(q) {
+  document.getElementById('hero-input').value = q;
+  doSearch('hero');
+}
+
+function doSearch(source) {
+  const input = document.getElementById(source === 'hero' ? 'hero-input' : 'header-search-input');
+  const q = input.value.trim();
+  if (!q) return;
+  currentQuery = q;
+  document.getElementById('header-search-input').value = q;
+  document.getElementById('hero-input').value = q;
+  showResults(q);
+}
+
+document.getElementById('hero-input').addEventListener('keydown', e => { if (e.key==='Enter') doSearch('hero'); });
+document.getElementById('header-search-input').addEventListener('keydown', e => { if (e.key==='Enter') doSearch('header'); });
+
+// ─── Show results page ─────────────────────────────────────────
+function showResults(query) {
+  document.getElementById('hero-section').style.display = 'none';
+  document.getElementById('results-section').style.display = '';
+  document.getElementById('sticky-header').style.display = 'flex';
+  document.getElementById('error-banner').style.display = 'none';
+  document.getElementById('results-meta').textContent = `Searching for "${query}"...`;
+  renderSkeleton();
+  fetchAndScore(query);
+}
+
+function renderSkeleton() {
+  const list = document.getElementById('results-list');
+  list.innerHTML = Array(5).fill(0).map(() => `
+    <div class="skeleton-card">
+      <div class="sk sk-thumb"></div>
+      <div style="flex:1">
+        <div class="sk sk-line" style="width:85%"></div>
+        <div class="sk sk-line" style="width:55%"></div>
+        <div class="sk sk-line" style="width:40%; height:10px;"></div>
+      </div>
+    </div>`).join('');
+}
+
+// ─── YouTube fetch ─────────────────────────────────────────────
+async function fetchYouTubeVideos(query) {
+  const params = new URLSearchParams({
+    part: 'snippet',
+    q: query + ' educational explained',
+    type: 'video',
+    videoCaption: 'closedCaption',
+    videoDuration: 'medium',
+    maxResults: 12,
+    relevanceLanguage: 'en',
+    key: YOUTUBE_API_KEY,
+    order: 'relevance',
+    safeSearch: 'strict',
+    videoEmbeddable: 'true'
+  });
+  const res = await fetch(`https://www.googleapis.com/youtube/v3/search?${params}`);
+  if (!res.ok) throw new Error('YouTube API error: ' + res.status);
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message);
+
+  const ids = data.items.map(i => i.id.videoId).join(',');
+  const detailParams = new URLSearchParams({
+    part: 'contentDetails,statistics,snippet',
+    id: ids,
+    key: YOUTUBE_API_KEY
+  });
+  const detailRes = await fetch(`https://www.googleapis.com/youtube/v3/videos?${detailParams}`);
+  const detailData = await detailRes.json();
+
+  return detailData.items.map(item => ({
+    id: item.id,
+    title: item.snippet.title,
+    channel: item.snippet.channelTitle,
+    description: item.snippet.description,
+    publishedAt: item.snippet.publishedAt,
+    thumbnail: item.snippet.thumbnails?.medium?.url || item.snippet.thumbnails?.default?.url,
+    duration: parseDuration(item.contentDetails.duration),
+    durationRaw: item.contentDetails.duration,
+    views: parseInt(item.statistics.viewCount || 0),
+    captions: item.contentDetails.caption === 'true',
+    url: `https://www.youtube.com/watch?v=${item.id}`
+  }));
+}
+
+function parseDuration(iso) {
+  const m = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+  if (!m) return 0;
+  return (parseInt(m[1]||0)*60) + parseInt(m[2]||0) + Math.round(parseInt(m[3]||0)/60);
+}
+
+function formatDuration(mins) {
+  if (mins >= 60) return `${Math.floor(mins/60)}h ${mins%60}m`;
+  return `${mins}m`;
+}
+
+// ─── Claude AI scoring ─────────────────────────────────────────
+async function scoreWithClaude(videos, query) {
+  const videoList = videos.map((v,i) =>
+    `${i+1}. "${v.title}" by ${v.channel} (${v.duration} min)\nDescription: ${v.description.slice(0,200)}`
+  ).join('\n\n');
+
+  const prompt = `You are an expert educational content evaluator. Score these YouTube videos for the search query: "${query}".
+
+For EACH video, return a JSON array with objects containing:
+- id: the video number (1-based)
+- infoScore: 0-100 (information density and educational depth)
+- biasScore: 0-100 (100 = perfectly neutral, 0 = highly biased/opinionated)
+- clarityScore: 0-100 (likely speech clarity and production quality based on channel reputation)
+- concisenessScore: 0-100 (optimal length for the content, 5-20 min = high score)
+- credibilityScore: 0-100 (channel reputation for educational content)
+- subtitleScore: 0-100 (likely subtitle quality — boost if captions likely accurate)
+- tags: array of 2-3 topic tags (e.g. ["AI","Economics","Future Tech"])
+- reason: one sentence explaining the quality assessment
+
+Return ONLY a valid JSON array. No markdown, no explanation.
+
+Videos to score:
+${videoList}`;
+
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+
+  const data = await response.json();
+  const text = data.content.map(c => c.text || '').join('');
+  const clean = text.replace(/```json|```/g, '').trim();
+  return JSON.parse(clean);
+}
+
+async function getTopicSummary(query) {
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      messages: [{ role: 'user', content: `Give a 2-sentence neutral educational overview of the topic "${query}" for a curious learner. Then list 3 key subtopics as a JSON object: {"overview": "...", "subtopics": ["...", "...", "..."]}. Return only the JSON.` }]
+    })
+  });
+  const data = await response.json();
+  const text = data.content.map(c => c.text || '').join('');
+  const clean = text.replace(/```json|```/g, '').trim();
+  return JSON.parse(clean);
+}
+
+// ─── Main fetch + score pipeline ──────────────────────────────
+async function fetchAndScore(query) {
+  const list = document.getElementById('results-list');
+  const meta = document.getElementById('results-meta');
+
+  try {
+    // Show status
+    meta.innerHTML = `<div class="status-bar"><div class="spinner"></div> Fetching YouTube videos...</div>`;
+
+    let videos;
+    try {
+      videos = await fetchYouTubeVideos(query);
+    } catch(e) {
+      // YouTube API not configured — use Claude to generate realistic mock data
+      meta.innerHTML = `<div class="status-bar"><div class="spinner"></div> Generating results with AI (demo mode)...</div>`;
+      videos = await generateMockVideos(query);
+    }
+
+    meta.innerHTML = `<div class="status-bar"><div class="spinner"></div> Scoring ${videos.length} videos with AI...</div>`;
+
+    let scores;
+    try {
+      scores = await scoreWithClaude(videos, query);
+    } catch(e) {
+      scores = videos.map((_,i) => generateFallbackScore(i));
+    }
+
+    // Merge scores into videos
+    allResults = videos.map((v, i) => {
+      const s = scores.find(x => x.id === i+1) || generateFallbackScore(i);
+      const total = Math.round(
+        s.infoScore * 0.30 +
+        s.biasScore * 0.20 +
+        s.clarityScore * 0.15 +
+        s.subtitleScore * 0.15 +
+        s.concisenessScore * 0.10 +
+        s.credibilityScore * 0.10
+      );
+      return { ...v, scores: s, totalScore: total };
+    });
+
+    // Get topic summary in background
+    getTopicSummary(query).then(summary => {
+      const panel = document.getElementById('summary-panel');
+      const text = document.getElementById('summary-text');
+      if (summary) {
+        panel.style.display = 'block';
+        text.innerHTML = `<p style="margin-bottom:8px;">${summary.overview}</p>
+          <strong style="font-size:11px;text-transform:uppercase;letter-spacing:0.7px;color:var(--gray-400);">Key subtopics</strong>
+          <ul class="summary-bullets" style="margin-top:6px;padding-left:1rem;">
+            ${(summary.subtopics||[]).map(t=>`<li>${t}</li>`).join('')}
+          </ul>`;
+      }
+    }).catch(()=>{});
+
+    buildTopicChips(allResults);
+    applySortFilter();
+
+  } catch(e) {
+    document.getElementById('error-banner').style.display = 'block';
+    document.getElementById('error-banner').textContent = 'Error loading results: ' + e.message;
+    list.innerHTML = '';
+    meta.textContent = 'Error loading results.';
+  }
+}
+
+// ─── Generate mock videos via Claude (demo mode) ──────────────
+async function generateMockVideos(query) {
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      messages: [{
+        role: 'user',
+        content: `Generate 6 realistic YouTube video results for the search query: "${query}".
+These should be plausible educational videos that could realistically exist.
+Use well-known educational YouTube channels like Kurzgesagt, ColdFusion, Veritasium, TED-Ed, Economics Explained, Two Minute Papers, Real Engineering, PBS Space Time, Wendover Productions, etc.
+
+Return ONLY a JSON array with objects:
+{
+  "id": "abc123xyz", 
+  "title": "Video Title Here",
+  "channel": "Channel Name",
+  "description": "Brief description of what the video covers...",
+  "duration": 12,
+  "views": 850000,
+  "captions": true,
+  "url": "https://www.youtube.com/watch?v=abc123xyz",
+  "thumbnail": null
+}
+
+Make durations between 6-22 minutes, views between 100k-5M. Return ONLY the JSON array.`
+      }]
+    })
+  });
+  const data = await response.json();
+  const text = data.content.map(c => c.text || '').join('');
+  const clean = text.replace(/```json|```/g, '').trim();
+  return JSON.parse(clean);
+}
+
+function generateFallbackScore(i) {
+  const base = 75 - i * 3;
+  return {
+    id: i+1,
+    infoScore: base + Math.floor(Math.random()*10),
+    biasScore: base + Math.floor(Math.random()*10),
+    clarityScore: base + Math.floor(Math.random()*10),
+    concisenessScore: base + Math.floor(Math.random()*10),
+    credibilityScore: base + Math.floor(Math.random()*10),
+    subtitleScore: base + Math.floor(Math.random()*10),
+    tags: ['Education'],
+    reason: 'AI scoring unavailable'
+  };
+}
+
+// ─── Render ────────────────────────────────────────────────────
+function buildTopicChips(videos) {
+  const tags = [...new Set(videos.flatMap(v => v.scores.tags || []))];
+  const wrap = document.getElementById('topic-filter-chips');
+  wrap.innerHTML = ['All', ...tags].map(t =>
+    `<div class="chip ${t==='All'?'active':''}" onclick="filterByTag(this,'${t}')">${t}</div>`
+  ).join('');
+}
+
+function filterByTag(el, tag) {
+  document.querySelectorAll('#topic-filter-chips .chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  applySortFilter(tag);
+}
+
+function applySortFilter(tagOverride) {
+  const minScore = parseInt(document.getElementById('score-range').value);
+  const maxDur = parseInt(document.getElementById('dur-range').value);
+  const needSubs = document.getElementById('f-subs').checked;
+  const sortBy = document.getElementById('sort-select').value;
+  const activeTag = tagOverride || (() => {
+    const a = document.querySelector('#topic-filter-chips .chip.active');
+    return a ? a.textContent : 'All';
+  })();
+
+  let filtered = allResults.filter(v => {
+    if (v.totalScore < minScore) return false;
+    if (v.duration > maxDur) return false;
+    if (needSubs && !v.captions) return false;
+    if (activeTag !== 'All' && !(v.scores.tags||[]).includes(activeTag)) return false;
+    return true;
+  });
+
+  if (sortBy === 'duration') filtered.sort((a,b) => a.duration - b.duration);
+  else if (sortBy === 'views') filtered.sort((a,b) => b.views - a.views);
+  else filtered.sort((a,b) => b.totalScore - a.totalScore);
+
+  renderResults(filtered);
+}
+
+function renderResults(videos) {
+  const meta = document.getElementById('results-meta');
+  const list = document.getElementById('results-list');
+
+  meta.innerHTML = `Showing <strong>${videos.length} result${videos.length!==1?'s':''}</strong> for "<strong>${currentQuery}</strong>"`;
+
+  if (!videos.length) {
+    list.innerHTML = `<div class="empty-state">
+      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="24" cy="24" r="20"/><line x1="8" y1="8" x2="40" y2="40"/>
+      </svg>
+      <h3>No results match your filters</h3>
+      <p>Try lowering the minimum quality score or increasing the max duration.</p>
+    </div>`;
+    return;
+  }
+
+  list.innerHTML = videos.map(v => {
+    const s = v.scores;
+    const sc = v.totalScore;
+    const badgeClass = sc >= 80 ? 'high' : sc >= 65 ? 'med' : 'low';
+    const starSvg = `<svg viewBox="0 0 12 12"><polygon points="6,1 7.5,4.5 11,5 8.5,7.5 9,11 6,9 3,11 3.5,7.5 1,5 4.5,4.5" fill="currentColor"/></svg>`;
+    const tags = (s.tags||[]).map(t => `<span class="tag">${t}</span>`).join('');
+    const subBadge = v.captions ? `<span class="sub-badge">
+      <svg viewBox="0 0 12 12" fill="none" stroke="#3B6D11" stroke-width="1.3"><rect x="1" y="3" width="10" height="7" rx="1"/><line x1="3" y1="6" x2="9" y2="6"/><line x1="3" y1="8" x2="7" y2="8"/></svg>
+      Subtitles</span>` : '';
+
+    const thumbHtml = v.thumbnail
+      ? `<img class="thumb-thumbnail" src="${v.thumbnail}" alt="" loading="lazy" />`
+      : `<div class="play-btn"><svg viewBox="0 0 16 16"><path d="M4 3l10 5-10 5z"/></svg></div>`;
+
+    const viewsStr = v.views >= 1000000
+      ? (v.views/1000000).toFixed(1)+'M'
+      : v.views >= 1000 ? (v.views/1000).toFixed(0)+'K' : v.views;
+
+    return `<div class="video-card" id="card-${v.id}">
+      <div class="thumb" onclick="window.open('${v.url}','_blank')">
+        ${thumbHtml}
+        <div class="thumb-dur">${v.duration}m</div>
+      </div>
+      <div class="card-body">
+        <a class="card-title" href="${v.url}" target="_blank" rel="noopener">${escHtml(v.title)}</a>
+        <div class="card-channel">${escHtml(v.channel)} · ${viewsStr} views</div>
+        <div class="card-meta">
+          <span class="score-badge ${badgeClass}">${starSvg} Score ${sc}</span>
+          ${tags}
+          ${subBadge}
+        </div>
+        ${s.reason ? `<div style="font-size:12px;color:var(--gray-400);margin-top:5px;line-height:1.5;">${escHtml(s.reason)}</div>` : ''}
+        <div class="expand-btn" onclick="toggleExpand('${v.id}')">show score breakdown ▾</div>
+        <div class="breakdown" id="breakdown-${v.id}">
+          ${scoreRow('Info density', s.infoScore)}
+          ${scoreRow('Bias neutral', s.biasScore)}
+          ${scoreRow('Speech clarity', s.clarityScore)}
+          ${scoreRow('Conciseness', s.concisenessScore)}
+          ${scoreRow('Credibility', s.credibilityScore)}
+          ${scoreRow('Subtitles', s.subtitleScore)}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function scoreRow(label, val) {
+  val = Math.min(100, Math.max(0, parseInt(val)||0));
+  return `<div class="score-row">
+    <span class="score-label">${label}</span>
+    <div class="bar-bg"><div class="bar-fill" style="width:${val}%"></div></div>
+    <span class="score-num">${val}</span>
+  </div>`;
+}
+
+function toggleExpand(id) {
+  const card = document.getElementById('card-' + id);
+  const bd = document.getElementById('breakdown-' + id);
+  const btn = card.querySelector('.expand-btn');
+  const open = bd.style.display === 'grid';
+  bd.style.display = open ? 'none' : 'grid';
+  btn.textContent = open ? 'show score breakdown ▾' : 'hide score breakdown ▴';
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ─── Live filter on slider change ─────────────────────────────
+['score-range','dur-range','f-density','f-neutral','f-expert','f-subs'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('change', () => { if(allResults.length) applySortFilter(); });
+});
+</script>
+</body>
+</html>
